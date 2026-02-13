@@ -1,7 +1,7 @@
 {
   "name": "Fantasy 5 Pro AI",
   "short_name": "F5 Pro",
-  "description": "Professional Arizona Fantasy 5 AI Analysis Tool",
+  "description": "Professional Fantasy 5 AI Analysis Tool",
   "start_url": "index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -9,13 +9,13 @@
   "theme_color": "#00ffcc",
   "icons": [
     {
-      "src": "https://via.placeholder.com/192x192.png?text=F5",
+      "src": "https://raw.githubusercontent.com/GoogleChrome/lighthouse/master/lighthouse-core/scripts/images/pwa-512.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://via.placeholder.com/512x512.png?text=F5-PRO",
+      "src": "https://raw.githubusercontent.com/GoogleChrome/lighthouse/master/lighthouse-core/scripts/images/pwa-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"

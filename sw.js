@@ -1,4 +1,4 @@
-// The "App Brain" - Minimal Service Worker for Installation
+// Service Worker: Required for Installation
 self.addEventListener('install', (event) => {
     self.skipWaiting();
 });
@@ -8,6 +8,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Just lets the app load normally
+    // Allows the app to load from the web normally
     event.respondWith(fetch(event.request));
 });

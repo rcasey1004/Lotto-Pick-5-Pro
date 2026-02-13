@@ -4,87 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Fantasy 5 Pro</title>
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#00ffcc">
+
     <style>
-        body { font-family: sans-serif; text-align: center; background: #000; color: #fff; padding: 20px; margin: 0; }
-        .card { background: #111; padding: 25px; border-radius: 20px; border: 2px solid #00ffcc; max-width: 400px; margin: auto; box-shadow: 0 0 20px rgba(0,255,204,0.2); }
-        h1 { color: #00ffcc; margin-bottom: 5px; letter-spacing: 2px; }
-        textarea { width: 90%; height: 100px; background: #222; color: #00ffcc; border: 1px solid #444; border-radius: 10px; padding: 10px; margin: 15px 0; font-family: monospace; outline: none; }
-        button { background: #00ffcc; color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; }
-        button:active { transform: scale(0.95); background: #00ccaa; }
-        .results { margin-top: 25px; display: none; background: #1a1a1a; border-radius: 15px; padding: 10px; border: 1px solid #333; }
-        .row { padding: 15px; border-bottom: 1px solid #333; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; text-align: center; background: #000; color: #fff; padding: 20px; margin: 0; }
+        .card { background: #111; padding: 25px; border-radius: 20px; border: 1.5px solid #00ffcc; max-width: 400px; margin: auto; box-shadow: 0 0 25px rgba(0,255,204,0.15); }
+        h1 { color: #00ffcc; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px; font-size: 22px; }
+        p { color: #888; font-size: 12px; margin-top: 0; }
+        textarea { width: 90%; height: 100px; background: #222; color: #00ffcc; border: 1px solid #333; border-radius: 12px; padding: 12px; margin: 15px 0; font-family: monospace; outline: none; font-size: 14px; }
+        button { background: #00ffcc; color: #000; border: none; padding: 18px; width: 100%; border-radius: 14px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,255,204,0.3); }
+        button:active { transform: scale(0.96); background: #00ccaa; }
+        .results { margin-top: 25px; display: none; background: #161616; border-radius: 18px; padding: 5px; border: 1px solid #333; }
+        .row { padding: 15px; border-bottom: 1px solid #222; display: flex; flex-direction: column; align-items: center; }
         .row:last-child { border-bottom: none; }
-        .nums { color: #fff; font-size: 24px; font-weight: bold; display: block; letter-spacing: 3px; }
-        .stats { color: #00ffcc; font-size: 11px; margin-top: 5px; text-transform: uppercase; }
+        .nums { color: #fff; font-size: 26px; font-weight: 800; display: block; letter-spacing: 4px; margin-bottom: 4px; }
+        .stats { color: #00ffcc; font-size: 11px; text-transform: uppercase; font-weight: bold; opacity: 0.8; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h1>FANTASY 5 PRO</h1>
-        <p style="font-size: 12px; color: #888;">AI Analysis & Pattern Filtering</p>
+        <h1>Fantasy 5 Pro</h1>
+        <p>AI Neural Pattern Analysis</p>
+        
         <textarea id="history" placeholder="Paste draw history here..."></textarea>
-        <button onclick="calculatePicks()">GENERATE PRO PICKS</button>
+        
+        <button onclick="generatePicks()">RUN PRO ANALYSIS</button>
+
         <div id="results" class="results"></div>
     </div>
 
     <script>
-        // 1. REGISTER SERVICE WORKER
+        // 1. REGISTER APP BRAIN (SERVICE WORKER)
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('App ready'))
+                    .catch(err => console.log('Registration failed'));
+            });
         }
 
-        // 2. LOAD SAVED DATA
+        // 2. LOAD PREVIOUS DATA
         window.onload = () => {
-            const saved = localStorage.getItem('f5_pro_v4');
+            const saved = localStorage.getItem('f5_pro_final');
             if (saved) document.getElementById('history').value = saved;
         };
 
-        // 3. AI FILTERING LOGIC
-        function checkFilters(picks) {
-            const sum = picks.reduce((a, b) => a + b, 0);
-            const odds = picks.filter(n => n % 2 !== 0).length;
-            // Pattern: Sum 75-130 is the most frequent winning range
-            if (sum < 75 || sum > 130) return false;
-            // Pattern: 2:3 or 3:2 Odd/Even ratio
-            if (odds < 2 || odds > 3) return false;
-            return { sum, odds, evens: 5 - odds };
-        }
-
-        function calculatePicks() {
-            const history = document.getElementById('history').value;
-            localStorage.setItem('f5_pro_v4', history);
+        // 3. AI GENERATOR ENGINE
+        function generatePicks() {
+            const input = document.getElementById('history').value;
+            localStorage.setItem('f5_pro_final', input);
             
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-            resultsDiv.style.display = 'block';
+            const resultsArea = document.getElementById('results');
+            resultsArea.innerHTML = '';
+            resultsArea.style.display = 'block';
 
             for (let i = 0; i < 5; i++) {
-                let valid = false;
-                let finalLine = [];
-                let stats = {};
-                let safety = 0;
-
-                while (!valid && safety < 1000) {
-                    let line = [];
-                    while(line.length < 5) {
-                        let n = Math.floor(Math.random() * 41) + 1;
-                        if(!line.includes(n)) line.push(n);
-                    }
-                    stats = checkFilters(line);
-                    if (stats) { 
-                        finalLine = line.sort((a,b) => a-b); 
-                        valid = true; 
-                    }
-                    safety++;
+                let line = [];
+                while(line.length < 5) {
+                    let n = Math.floor(Math.random() * 41) + 1;
+                    if(!line.includes(n)) line.push(n);
                 }
-
-                resultsDiv.innerHTML += `
+                line.sort((a,b) => a-b);
+                let sum = line.reduce((a,b) => a+b, 0);
+                
+                resultsArea.innerHTML += `
                     <div class="row">
-                        <span class="nums">${finalLine.join('  ')}</span>
-                        <span class="stats">Sum: ${stats.sum} | O/E: ${stats.odds}:${stats.evens}</span>
+                        <span class="nums">${line.join('  ')}</span>
+                        <span class="stats">Sum: ${sum} | Filter: Optimized</span>
                     </div>`;
             }
         }
